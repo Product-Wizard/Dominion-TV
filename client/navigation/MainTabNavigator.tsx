@@ -1,8 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Feather } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
-import { Platform, StyleSheet } from "react-native";
 import HomeScreen from "@/screens/HomeScreen";
 import NewsScreen from "@/screens/NewsScreen";
 import SettingsScreen from "@/screens/SettingsScreen";
@@ -25,43 +23,20 @@ export default function MainTabNavigator() {
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        tabBarActiveTintColor: Colors.light.primary,
-        tabBarInactiveTintColor: theme.tabIconDefault,
+        tabBarActiveTintColor: "#FFFFFF",
+        tabBarInactiveTintColor: "rgba(255, 255, 255, 0.6)",
         tabBarStyle: {
           position: "absolute",
-          backgroundColor: Platform.select({
-            ios: "transparent",
-            android: theme.backgroundRoot,
-          }),
+          backgroundColor: Colors.light.primary,
           borderTopWidth: 0,
           elevation: 0,
         },
-        tabBarBackground: () =>
-          Platform.OS === "ios" ? (
-            <BlurView
-              intensity={100}
-              tint={isDark ? "dark" : "light"}
-              style={StyleSheet.absoluteFill}
-            />
-          ) : null,
         headerTitleAlign: "center",
-        headerTransparent: true,
-        headerTintColor: theme.text,
+        headerTransparent: false,
+        headerTintColor: "#FFFFFF",
         headerStyle: {
-          backgroundColor: Platform.select({
-            ios: undefined,
-            android: theme.backgroundRoot,
-            web: theme.backgroundRoot,
-          }),
+          backgroundColor: Colors.light.primary,
         },
-        headerBackground: () =>
-          Platform.OS === "ios" ? (
-            <BlurView
-              intensity={100}
-              tint={isDark ? "dark" : "light"}
-              style={StyleSheet.absoluteFill}
-            />
-          ) : null,
       }}
     >
       <Tab.Screen

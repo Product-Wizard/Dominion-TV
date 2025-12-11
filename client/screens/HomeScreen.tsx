@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, FlatList, StyleSheet, Pressable, Alert, Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { Feather } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
@@ -235,7 +234,6 @@ function ProgramCard({ program }: { program: Program }) {
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
-  const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
   const [, setTick] = useState(0);
@@ -251,7 +249,7 @@ export default function HomeScreen() {
     <FlatList
       style={{ flex: 1, backgroundColor: theme.backgroundRoot }}
       contentContainerStyle={{
-        paddingTop: headerHeight + Spacing.lg,
+        paddingTop: Spacing.lg,
         paddingBottom: tabBarHeight + Spacing.xl,
         paddingHorizontal: Spacing.lg,
         gap: Spacing.md,
