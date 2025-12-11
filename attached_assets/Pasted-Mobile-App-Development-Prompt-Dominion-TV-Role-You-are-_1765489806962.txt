@@ -1,0 +1,90 @@
+Mobile App Development Prompt: Dominion TV
+
+Role: You are an expert React Native developer using Expo.
+Project Goal: Build a functional MVP for a broadcasting station's mobile app called "Dominion TV".
+Tech Stack: React Native (Expo), Javascript, firebase
+1. Design System & Branding
+
+App Name: Dominion TV
+
+Primary Color: Bright Turquoise (#08D9D6) - Used for active tabs, buttons, and headers.
+
+Secondary Color: Red - Used for "LIVE" status borders and badges.
+
+Background: White/Clean minimalist layout.
+
+Typography: System default (San Francisco/Roboto), clean and legible.
+
+2. Core Navigation Structure
+
+Create a Custom Bottom Tab Bar (do not use react-navigation) with three tabs:
+
+Home (Default): Displays the Program Schedule.
+
+News: Displays a list of news headlines.
+
+Settings: Displays app preferences and "About" info.
+
+3. Screen 1: Home (Program Schedule)
+
+Header: Fixed top header with the text "DOMINION TV" in the primary color.
+
+Content: A vertical scrollable list of program cards.
+
+Card Design:
+
+Left: A square thumbnail placeholder (gray bg with TV emoji).
+
+Middle: Title (Bold), Host Name (Grey), Time Slot (Primary Color).
+
+Right: A circular "Play" button.
+
+"LIVE" Logic:
+
+The app must check the user's current device time against the schedule.
+
+If a show is currently airing, the card must have a Red "LIVE" badge and a Gold border.
+
+Action: Clicking "Play" on a LIVE show opens the station's YouTube Channel URL.
+
+Action: Clicking "Play" on a NON-LIVE show opens a YouTube search for that specific program's title.
+
+4. Screen 2: News
+
+Header: "NEWS"
+
+Content: A list of mock news items (Title, Time ago, Image placeholder).
+
+Interaction: Clicking a news item currently does nothing (placeholder).
+
+5. Screen 3: Settings
+
+Header: "SETTINGS"
+
+Content:
+
+A "Push Notifications" toggle switch (visual only).
+
+An "About" section showing the app version.
+
+6. Data Source (Hardcoded Schedule)
+
+Use this exact schedule for the logic:
+
+07:00 - 08:50: DAYBREAK LIVE
+
+09:00 - 09:50: AGENDA
+
+10:00 - 10:50: The Big Conversation
+
+11:00 - 11:55: Dominion Sport
+
+12:00 - 13:50: NEWS at 12 noon
+
+13:00 - 13:50: E-Plus
+
+14:00 - 14:50: LOJUDE DOMINION
+
+15:30 - 16:30: IYO AYE
+
+18:00 - 19:00: The POlISCOPE
