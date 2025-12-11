@@ -59,11 +59,11 @@ export function ErrorFallback({ error, resetError }: ErrorFallbackProps) {
 
       <View style={styles.content}>
         <ThemedText type="h1" style={styles.title}>
-          Something went wrong
+          Oops! Broadcast Interrupted
         </ThemedText>
 
         <ThemedText type="body" style={styles.message}>
-          Please reload the app to continue.
+          Dominion TV encountered an unexpected issue. Tap below to get back on air!
         </ThemedText>
 
         <Pressable
@@ -81,7 +81,7 @@ export function ErrorFallback({ error, resetError }: ErrorFallbackProps) {
             type="body"
             style={[styles.buttonText, { color: theme.buttonText }]}
           >
-            Try Again
+            Resume Broadcast
           </ThemedText>
         </Pressable>
       </View>

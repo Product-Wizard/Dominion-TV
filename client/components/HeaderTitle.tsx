@@ -1,8 +1,7 @@
 import React from "react";
 import { View, StyleSheet, Image } from "react-native";
-
-import { ThemedText } from "@/components/ThemedText";
-import { Spacing } from "@/constants/theme";
+import { Text } from "react-native";
+import { Spacing, Colors } from "@/constants/theme";
 
 interface HeaderTitleProps {
   title: string;
@@ -16,7 +15,7 @@ export function HeaderTitle({ title }: HeaderTitleProps) {
         style={styles.icon}
         resizeMode="contain"
       />
-      <ThemedText style={styles.title}>{title}</ThemedText>
+      <Text style={styles.title}>{title}</Text>
     </View>
   );
 }
@@ -31,9 +30,12 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     marginRight: Spacing.sm,
+    borderRadius: 6,
   },
   title: {
     fontSize: 17,
-    fontWeight: "600",
+    fontWeight: "700",
+    color: Colors.light.primary,
+    letterSpacing: 1,
   },
 });

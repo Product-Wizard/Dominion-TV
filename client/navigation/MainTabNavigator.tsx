@@ -3,13 +3,17 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Feather } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { Platform, StyleSheet } from "react-native";
-import HomeStackNavigator from "@/navigation/HomeStackNavigator";
-import ProfileStackNavigator from "@/navigation/ProfileStackNavigator";
+import HomeScreen from "@/screens/HomeScreen";
+import NewsScreen from "@/screens/NewsScreen";
+import SettingsScreen from "@/screens/SettingsScreen";
 import { useTheme } from "@/hooks/useTheme";
+import { HeaderTitle } from "@/components/HeaderTitle";
+import { Colors } from "@/constants/theme";
 
 export type MainTabParamList = {
-  HomeTab: undefined;
-  ProfileTab: undefined;
+  Home: undefined;
+  News: undefined;
+  Settings: undefined;
 };
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -19,9 +23,9 @@ export default function MainTabNavigator() {
 
   return (
     <Tab.Navigator
-      initialRouteName="HomeTab"
+      initialRouteName="Home"
       screenOptions={{
-        tabBarActiveTintColor: theme.tabIconSelected,
+        tabBarActiveTintColor: Colors.light.primary,
         tabBarInactiveTintColor: theme.tabIconDefault,
         tabBarStyle: {
           position: "absolute",
@@ -40,26 +44,53 @@ export default function MainTabNavigator() {
               style={StyleSheet.absoluteFill}
             />
           ) : null,
-        headerShown: false,
+        headerTitleAlign: "center",
+        headerTransparent: true,
+        headerTintColor: theme.text,
+        headerStyle: {
+          backgroundColor: Platform.select({
+            ios: undefined,
+            android: theme.backgroundRoot,
+            web: theme.backgroundRoot,
+          }),
+        },
+        headerBackground: () =>
+          Platform.OS === "ios" ? (
+            <BlurView
+              intensity={100}
+              tint={isDark ? "dark" : "light"}
+              style={StyleSheet.absoluteFill}
+            />
+          ) : null,
       }}
     >
       <Tab.Screen
-        name="HomeTab"
-        component={HomeStackNavigator}
+        name="Home"
+        component={HomeScreen}
         options={{
-          title: "Home",
+          headerTitle: () => <HeaderTitle title="DOMINION TV" />,
           tabBarIcon: ({ color, size }) => (
             <Feather name="home" size={size} color={color} />
           ),
         }}
       />
       <Tab.Screen
-        name="ProfileTab"
-        component={ProfileStackNavigator}
+        name="News"
+        component={NewsScreen}
         options={{
-          title: "Profile",
+          headerTitle: "NEWS",
           tabBarIcon: ({ color, size }) => (
-            <Feather name="user" size={size} color={color} />
+            <Feather name="file-text" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          headerTitle: "SETTINGS",
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="settings" size={size} color={color} />
           ),
         }}
       />
