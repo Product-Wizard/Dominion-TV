@@ -1,5 +1,5 @@
 import React from "react";
-import { View, FlatList, StyleSheet, Pressable } from "react-native";
+import { View, FlatList, StyleSheet, Pressable, ImageBackground } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { Feather } from "@expo/vector-icons";
@@ -17,9 +17,16 @@ interface NewsItem {
   id: string;
   title: string;
   timeAgo: string;
+  isBreaking?: boolean;
 }
 
 const NEWS_DATA: NewsItem[] = [
+  {
+    id: "breaking",
+    title: "Major Policy Changes Announced Following Summit",
+    timeAgo: "Just now",
+    isBreaking: true,
+  },
   {
     id: "1",
     title: "Governor Announces New Infrastructure Development Plan",
@@ -45,14 +52,47 @@ const NEWS_DATA: NewsItem[] = [
     title: "Education Reform Bill Passes Legislative Assembly",
     timeAgo: "10 hours ago",
   },
-  {
-    id: "6",
-    title: "Cultural Festival Celebrates Heritage and Diversity",
-    timeAgo: "12 hours ago",
-  },
 ];
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+function BreakingNewsCard({ item }: { item: NewsItem }) {
+  const scale = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
+  const handlePressIn = () => {
+    scale.value = withSpring(0.98, { damping: 15, stiffness: 150 });
+  };
+
+  const handlePressOut = () => {
+    scale.value = withSpring(1, { damping: 15, stiffness: 150 });
+  };
+
+  return (
+    <AnimatedPressable
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      style={[styles.breakingCard, animatedStyle]}
+    >
+      <ImageBackground
+        source={{ uri: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80" }}
+        style={styles.breakingImageBg}
+        imageStyle={styles.breakingImage}
+      >
+        <View style={styles.breakingOverlay}>
+          <View style={styles.breakingBadge}>
+            <ThemedText style={styles.breakingBadgeText}>Breaking News</ThemedText>
+          </View>
+          <ThemedText style={styles.breakingTitle}>{item.title}</ThemedText>
+          <ThemedText style={styles.breakingTime}>{item.timeAgo}</ThemedText>
+        </View>
+      </ImageBackground>
+    </AnimatedPressable>
+  );
+}
 
 function NewsCard({ item }: { item: NewsItem }) {
   const { theme } = useTheme();
@@ -102,6 +142,9 @@ export default function NewsScreen() {
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
 
+  const breakingNews = NEWS_DATA.find((item) => item.isBreaking);
+  const regularNews = NEWS_DATA.filter((item) => !item.isBreaking);
+
   return (
     <FlatList
       style={{ flex: 1, backgroundColor: theme.backgroundRoot }}
@@ -112,14 +155,64 @@ export default function NewsScreen() {
         gap: Spacing.md,
       }}
       scrollIndicatorInsets={{ bottom: insets.bottom }}
-      data={NEWS_DATA}
+      data={regularNews}
       keyExtractor={(item) => item.id}
+      ListHeaderComponent={
+        breakingNews ? (
+          <View style={styles.headerContainer}>
+            <BreakingNewsCard item={breakingNews} />
+          </View>
+        ) : null
+      }
       renderItem={({ item }) => <NewsCard item={item} />}
     />
   );
 }
 
 const styles = StyleSheet.create({
+  headerContainer: {
+    marginBottom: Spacing.sm,
+  },
+  breakingCard: {
+    borderRadius: BorderRadius.md,
+    overflow: "hidden",
+    height: 220,
+  },
+  breakingImageBg: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
+  breakingImage: {
+    borderRadius: BorderRadius.md,
+  },
+  breakingOverlay: {
+    backgroundColor: "rgba(0, 0, 0, 0.45)",
+    padding: Spacing.lg,
+    paddingTop: Spacing.xl,
+  },
+  breakingBadge: {
+    backgroundColor: Colors.light.secondary,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
+    borderRadius: BorderRadius.xs,
+    alignSelf: "flex-start",
+    marginBottom: Spacing.sm,
+  },
+  breakingBadgeText: {
+    color: "#FFFFFF",
+    fontSize: 12,
+    fontWeight: "700",
+  },
+  breakingTitle: {
+    color: Colors.light.primary,
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: Spacing.xs,
+  },
+  breakingTime: {
+    color: "rgba(255, 255, 255, 0.8)",
+    fontSize: 13,
+  },
   newsCard: {
     flexDirection: "row",
     padding: Spacing.md,
