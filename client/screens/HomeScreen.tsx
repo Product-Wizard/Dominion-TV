@@ -165,7 +165,7 @@ function ProgramCard({ program }: { program: Program }) {
       if (live) {
         await Linking.openURL(YOUTUBE_CHANNEL_URL);
       } else {
-        const searchQuery = encodeURIComponent(`Dominion TV ${program.title}`);
+        const searchQuery = encodeURIComponent(`dominionbroadcast ${program.title}`);
         const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${searchQuery}`;
         await Linking.openURL(youtubeSearchUrl);
       }
@@ -174,7 +174,7 @@ function ProgramCard({ program }: { program: Program }) {
         window.open(
           live
             ? YOUTUBE_CHANNEL_URL
-            : `https://www.youtube.com/results?search_query=${encodeURIComponent(`Dominion TV ${program.title}`)}`,
+            : `https://www.youtube.com/results?search_query=${encodeURIComponent(`dominionbroadcast ${program.title}`)}`,
           "_blank"
         );
       } else {
