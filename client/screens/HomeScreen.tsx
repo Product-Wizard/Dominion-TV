@@ -161,22 +161,13 @@ function ProgramCard({ program }: { program: Program }) {
   };
 
   const handlePlay = async () => {
+    const searchQuery = encodeURIComponent(`dominionbroadcast ${program.title}`);
+    const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${searchQuery}`;
     try {
-      if (live) {
-        await Linking.openURL(YOUTUBE_CHANNEL_URL);
-      } else {
-        const searchQuery = encodeURIComponent(`dominionbroadcast ${program.title}`);
-        const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${searchQuery}`;
-        await Linking.openURL(youtubeSearchUrl);
-      }
+      await Linking.openURL(youtubeSearchUrl);
     } catch (error) {
       if (Platform.OS === "web") {
-        window.open(
-          live
-            ? YOUTUBE_CHANNEL_URL
-            : `https://www.youtube.com/results?search_query=${encodeURIComponent(`dominionbroadcast ${program.title}`)}`,
-          "_blank"
-        );
+        window.open(youtubeSearchUrl, "_blank");
       } else {
         Alert.alert("Error", "Could not open YouTube");
       }
