@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, FlatList, StyleSheet, Pressable, Alert, Platform } from "react-native";
+import { View, FlatList, StyleSheet, Pressable, Alert, Platform, Image, ImageSourcePropType } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { Feather } from "@expo/vector-icons";
@@ -13,6 +13,10 @@ import Animated, {
 import { useTheme } from "@/hooks/useTheme";
 import { Spacing, BorderRadius, Colors } from "@/constants/theme";
 import { ThemedText } from "@/components/ThemedText";
+
+const PROGRAM_IMAGES: Record<string, ImageSourcePropType> = {
+  "3": require("../../assets/images/the-big-conversation.jpg"),
+};
 
 interface Program {
   id: string;
@@ -194,9 +198,13 @@ function ProgramCard({ program }: { program: Program }) {
         </View>
       ) : null}
 
-      <View style={[styles.thumbnail, { backgroundColor: theme.backgroundSecondary }]}>
-        <Feather name="tv" size={28} color={theme.textSecondary} />
-      </View>
+      {PROGRAM_IMAGES[program.id] ? (
+        <Image source={PROGRAM_IMAGES[program.id]} style={styles.thumbnail} resizeMode="cover" />
+      ) : (
+        <View style={[styles.thumbnail, { backgroundColor: theme.backgroundSecondary }]}>
+          <Feather name="tv" size={28} color={theme.textSecondary} />
+        </View>
+      )}
 
       <View style={styles.programInfo}>
         <ThemedText style={styles.programTitle} numberOfLines={1}>
