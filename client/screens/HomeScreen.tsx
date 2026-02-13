@@ -16,6 +16,7 @@ import { ThemedText } from "@/components/ThemedText";
 
 const PROGRAM_IMAGES: Record<string, ImageSourcePropType> = {
   "3": require("../../assets/images/the-big-conversation.jpg"),
+  "7": require("../../assets/images/lojude-dominion.jpg"),
 };
 
 interface Program {
