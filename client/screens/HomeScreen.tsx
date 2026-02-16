@@ -19,6 +19,7 @@ const PROGRAM_IMAGES: Record<string, ImageSourcePropType> = {
   "6": require("../../assets/images/news-at-12.png"),
   "7": require("../../assets/images/news-at-12.png"),
   "9": require("../../assets/images/lojude-dominion.jpg"),
+  "12": require("../../assets/images/the-poliscope.png"),
 };
 
 interface Program {
