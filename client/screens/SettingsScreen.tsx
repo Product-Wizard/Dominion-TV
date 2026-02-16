@@ -15,15 +15,19 @@ interface ProgramNotification {
 }
 
 const PROGRAMS: ProgramNotification[] = [
-  { id: "1", title: "DAYBREAK LIVE", enabled: false },
-  { id: "2", title: "AGENDA", enabled: false },
-  { id: "3", title: "The Big Conversation", enabled: false },
-  { id: "4", title: "Dominion Sport", enabled: false },
-  { id: "5", title: "NEWS at 12 noon", enabled: false },
-  { id: "6", title: "E-Plus", enabled: false },
-  { id: "7", title: "LOJUDE DOMINION", enabled: false },
-  { id: "8", title: "IYO AYE", enabled: false },
-  { id: "9", title: "The POLISCOPE", enabled: false },
+  { id: "1", title: "Daybreak Live", enabled: false },
+  { id: "2", title: "Idan Ori Odan", enabled: false },
+  { id: "3", title: "The Agenda", enabled: false },
+  { id: "4", title: "The Big Conversation", enabled: false },
+  { id: "5", title: "Dominion Sports", enabled: false },
+  { id: "6", title: "Iroyin Lerefe", enabled: false },
+  { id: "7", title: "Dominion TV News", enabled: false },
+  { id: "8", title: "E-Plus", enabled: false },
+  { id: "9", title: "Lojude", enabled: false },
+  { id: "10", title: "Okodoro Oselu", enabled: false },
+  { id: "11", title: "Iyo Aye", enabled: false },
+  { id: "12", title: "The Policescope", enabled: false },
+  { id: "13", title: "Oke Agba", enabled: false },
 ];
 
 export default function SettingsScreen() {

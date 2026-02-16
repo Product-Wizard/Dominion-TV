@@ -15,15 +15,17 @@ import { Spacing, BorderRadius, Colors } from "@/constants/theme";
 import { ThemedText } from "@/components/ThemedText";
 
 const PROGRAM_IMAGES: Record<string, ImageSourcePropType> = {
-  "3": require("../../assets/images/the-big-conversation.jpg"),
-  "5": require("../../assets/images/news-at-12.png"),
-  "7": require("../../assets/images/lojude-dominion.jpg"),
+  "4": require("../../assets/images/the-big-conversation.jpg"),
+  "6": require("../../assets/images/news-at-12.png"),
+  "7": require("../../assets/images/news-at-12.png"),
+  "9": require("../../assets/images/lojude-dominion.jpg"),
 };
 
 interface Program {
   id: string;
   title: string;
-  host: string;
+  days: string;
+  daysOfWeek: number[];
   startTime: string;
   endTime: string;
   startHour: number;
@@ -35,10 +37,11 @@ interface Program {
 const SCHEDULE: Program[] = [
   {
     id: "1",
-    title: "DAYBREAK LIVE",
-    host: "Morning Team",
-    startTime: "07:00",
-    endTime: "08:50",
+    title: "Daybreak Live",
+    days: "Mon-Sat",
+    daysOfWeek: [1, 2, 3, 4, 5, 6],
+    startTime: "7:00 AM",
+    endTime: "8:50 AM",
     startHour: 7,
     startMinute: 0,
     endHour: 8,
@@ -46,10 +49,11 @@ const SCHEDULE: Program[] = [
   },
   {
     id: "2",
-    title: "AGENDA",
-    host: "News Desk",
-    startTime: "09:00",
-    endTime: "09:50",
+    title: "Idan Ori Odan",
+    days: "Mon, Wed, Fri",
+    daysOfWeek: [1, 3, 5],
+    startTime: "9:00 AM",
+    endTime: "9:50 AM",
     startHour: 9,
     startMinute: 0,
     endHour: 9,
@@ -57,93 +61,147 @@ const SCHEDULE: Program[] = [
   },
   {
     id: "3",
-    title: "The Big Conversation",
-    host: "Discussion Panel",
-    startTime: "10:00",
-    endTime: "10:50",
-    startHour: 10,
+    title: "The Agenda",
+    days: "Tue, Thu",
+    daysOfWeek: [2, 4],
+    startTime: "9:00 AM",
+    endTime: "9:50 AM",
+    startHour: 9,
     startMinute: 0,
-    endHour: 10,
+    endHour: 9,
     endMinute: 50,
   },
   {
     id: "4",
-    title: "Dominion Sport",
-    host: "Sports Desk",
-    startTime: "11:00",
-    endTime: "11:55",
-    startHour: 11,
+    title: "The Big Conversation",
+    days: "Mon-Fri",
+    daysOfWeek: [1, 2, 3, 4, 5],
+    startTime: "10:00 AM",
+    endTime: "11:00 AM",
+    startHour: 10,
     startMinute: 0,
     endHour: 11,
-    endMinute: 55,
+    endMinute: 0,
   },
   {
     id: "5",
-    title: "NEWS at 12 noon",
-    host: "News Anchors",
-    startTime: "12:00",
-    endTime: "13:50",
-    startHour: 12,
-    startMinute: 0,
-    endHour: 13,
+    title: "Dominion Sports",
+    days: "Mon-Fri",
+    daysOfWeek: [1, 2, 3, 4, 5],
+    startTime: "11:15 AM",
+    endTime: "11:50 AM",
+    startHour: 11,
+    startMinute: 15,
+    endHour: 11,
     endMinute: 50,
   },
   {
     id: "6",
+    title: "Iroyin Lerefe",
+    days: "Mon-Fri",
+    daysOfWeek: [1, 2, 3, 4, 5],
+    startTime: "12:00 PM",
+    endTime: "12:15 PM",
+    startHour: 12,
+    startMinute: 0,
+    endHour: 12,
+    endMinute: 15,
+  },
+  {
+    id: "7",
+    title: "Dominion TV News",
+    days: "Mon-Fri",
+    daysOfWeek: [1, 2, 3, 4, 5],
+    startTime: "12:15 PM",
+    endTime: "12:30 PM",
+    startHour: 12,
+    startMinute: 15,
+    endHour: 12,
+    endMinute: 30,
+  },
+  {
+    id: "8",
     title: "E-Plus",
-    host: "Entertainment Team",
-    startTime: "13:00",
-    endTime: "13:50",
+    days: "Mon, Wed, Fri",
+    daysOfWeek: [1, 3, 5],
+    startTime: "1:00 PM",
+    endTime: "1:50 PM",
     startHour: 13,
     startMinute: 0,
     endHour: 13,
     endMinute: 50,
   },
   {
-    id: "7",
-    title: "LOJUDE DOMINION",
-    host: "Cultural Team",
-    startTime: "14:00",
-    endTime: "14:50",
+    id: "9",
+    title: "Lojude",
+    days: "Mon, Tue, Thu",
+    daysOfWeek: [1, 2, 4],
+    startTime: "2:00 PM",
+    endTime: "2:50 PM",
     startHour: 14,
     startMinute: 0,
     endHour: 14,
     endMinute: 50,
   },
   {
-    id: "8",
-    title: "IYO AYE",
-    host: "Lifestyle Team",
-    startTime: "15:30",
-    endTime: "16:30",
+    id: "10",
+    title: "Okodoro Oselu",
+    days: "Mon",
+    daysOfWeek: [1],
+    startTime: "3:00 PM",
+    endTime: "3:50 PM",
+    startHour: 15,
+    startMinute: 0,
+    endHour: 15,
+    endMinute: 50,
+  },
+  {
+    id: "11",
+    title: "Iyo Aye",
+    days: "Tue",
+    daysOfWeek: [2],
+    startTime: "3:30 PM",
+    endTime: "4:25 PM",
     startHour: 15,
     startMinute: 30,
     endHour: 16,
-    endMinute: 30,
+    endMinute: 25,
   },
   {
-    id: "9",
-    title: "The POLISCOPE",
-    host: "Political Analysts",
-    startTime: "18:00",
-    endTime: "19:00",
+    id: "12",
+    title: "The Policescope",
+    days: "Wed",
+    daysOfWeek: [3],
+    startTime: "6:00 PM",
+    endTime: "6:50 PM",
     startHour: 18,
     startMinute: 0,
-    endHour: 19,
-    endMinute: 0,
+    endHour: 18,
+    endMinute: 50,
+  },
+  {
+    id: "13",
+    title: "Oke Agba",
+    days: "Thu",
+    daysOfWeek: [4],
+    startTime: "3:00 PM",
+    endTime: "3:50 PM",
+    startHour: 15,
+    startMinute: 0,
+    endHour: 15,
+    endMinute: 50,
   },
 ];
 
-const YOUTUBE_CHANNEL_URL = "https://www.youtube.com/@DominionTV";
-
 function isLive(program: Program): boolean {
   const now = new Date();
+  const currentDay = now.getDay();
+  if (!program.daysOfWeek.includes(currentDay)) return false;
   const currentHour = now.getHours();
   const currentMinute = now.getMinutes();
   const currentTotalMinutes = currentHour * 60 + currentMinute;
   const startTotalMinutes = program.startHour * 60 + program.startMinute;
   const endTotalMinutes = program.endHour * 60 + program.endMinute;
-
   return currentTotalMinutes >= startTotalMinutes && currentTotalMinutes < endTotalMinutes;
 }
 
@@ -213,7 +271,7 @@ function ProgramCard({ program }: { program: Program }) {
           {program.title}
         </ThemedText>
         <ThemedText style={[styles.hostName, { color: theme.textSecondary }]}>
-          {program.host}
+          {program.days}
         </ThemedText>
         <ThemedText style={[styles.timeSlot, { color: Colors.light.primary }]}>
           {program.startTime} - {program.endTime}
