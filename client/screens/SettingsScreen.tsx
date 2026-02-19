@@ -1,48 +1,164 @@
-import React, { useState } from "react";
-import { View, ScrollView, StyleSheet, Switch } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import { View, ScrollView, StyleSheet, Switch, Alert, Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { Feather } from "@expo/vector-icons";
+import * as Notifications from "expo-notifications";
+import * as Linking from "expo-linking";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { useTheme } from "@/hooks/useTheme";
 import { Spacing, BorderRadius, Colors } from "@/constants/theme";
 import { ThemedText } from "@/components/ThemedText";
 
-interface ProgramNotification {
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
+
+interface ProgramSchedule {
   id: string;
   title: string;
-  enabled: boolean;
+  daysOfWeek: number[];
+  startHour: number;
+  startMinute: number;
 }
 
-const PROGRAMS: ProgramNotification[] = [
-  { id: "1", title: "Daybreak Live", enabled: false },
-  { id: "2", title: "Idan Ori Odan", enabled: false },
-  { id: "3", title: "The Agenda", enabled: false },
-  { id: "4", title: "The Big Conversation", enabled: false },
-  { id: "5", title: "Dominion Sports", enabled: false },
-  { id: "6", title: "Iroyin Lerefe", enabled: false },
-  { id: "7", title: "Dominion TV News", enabled: false },
-  { id: "8", title: "E-Plus", enabled: false },
-  { id: "9", title: "Lojude", enabled: false },
-  { id: "10", title: "Okodoro Oselu", enabled: false },
-  { id: "11", title: "Iyo Aye", enabled: false },
-  { id: "12", title: "The Policescope", enabled: false },
-  { id: "13", title: "Oke Agba", enabled: false },
+const PROGRAM_SCHEDULES: ProgramSchedule[] = [
+  { id: "1", title: "Daybreak Live", daysOfWeek: [1, 2, 3, 4, 5, 6], startHour: 7, startMinute: 0 },
+  { id: "2", title: "Idan Ori Odan", daysOfWeek: [1, 3, 5], startHour: 9, startMinute: 0 },
+  { id: "3", title: "The Agenda", daysOfWeek: [2, 4], startHour: 9, startMinute: 0 },
+  { id: "4", title: "The Big Conversation", daysOfWeek: [1, 2, 3, 4, 5], startHour: 10, startMinute: 0 },
+  { id: "5", title: "Dominion Sports", daysOfWeek: [1, 2, 3, 4, 5], startHour: 11, startMinute: 15 },
+  { id: "6", title: "Iroyin Lerefe", daysOfWeek: [1, 2, 3, 4, 5], startHour: 12, startMinute: 0 },
+  { id: "7", title: "Dominion TV News", daysOfWeek: [1, 2, 3, 4, 5], startHour: 12, startMinute: 15 },
+  { id: "8", title: "E-Plus", daysOfWeek: [1, 3, 5], startHour: 13, startMinute: 0 },
+  { id: "9", title: "Lojude", daysOfWeek: [1, 2, 4], startHour: 14, startMinute: 0 },
+  { id: "10", title: "Okodoro Oselu", daysOfWeek: [1], startHour: 15, startMinute: 0 },
+  { id: "11", title: "Iyo Aye", daysOfWeek: [2], startHour: 15, startMinute: 30 },
+  { id: "12", title: "The Policescope", daysOfWeek: [3], startHour: 18, startMinute: 0 },
+  { id: "13", title: "Oke Agba", daysOfWeek: [4], startHour: 15, startMinute: 0 },
 ];
+
+const STORAGE_KEY = "program_notifications";
+
+async function scheduleReminders(program: ProgramSchedule) {
+  const now = new Date();
+
+  for (const dayOfWeek of program.daysOfWeek) {
+    let reminderMinute = program.startMinute - 15;
+    let reminderHour = program.startHour;
+    if (reminderMinute < 0) {
+      reminderMinute += 60;
+      reminderHour -= 1;
+    }
+
+    const trigger: Notifications.WeeklyTriggerInput = {
+      type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
+      weekday: dayOfWeek === 0 ? 1 : dayOfWeek + 1,
+      hour: reminderHour,
+      minute: reminderMinute,
+    };
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Dominion TV - Coming Up Next",
+        body: `${program.title} starts in 15 minutes!`,
+        sound: true,
+        data: { programId: program.id },
+      },
+      trigger,
+      identifier: `reminder-${program.id}-day-${dayOfWeek}`,
+    });
+  }
+}
+
+async function cancelReminders(programId: string) {
+  const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+  for (const notification of scheduled) {
+    if (notification.identifier.startsWith(`reminder-${programId}-`)) {
+      await Notifications.cancelScheduledNotificationAsync(notification.identifier);
+    }
+  }
+}
 
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
-  const [programNotifications, setProgramNotifications] = useState<ProgramNotification[]>(PROGRAMS);
+  const [enabledPrograms, setEnabledPrograms] = useState<Record<string, boolean>>({});
+  const [loaded, setLoaded] = useState(false);
 
-  const toggleProgramNotification = (id: string) => {
-    setProgramNotifications((prev) =>
-      prev.map((program) =>
-        program.id === id ? { ...program, enabled: !program.enabled } : program
-      )
+  useEffect(() => {
+    AsyncStorage.getItem(STORAGE_KEY).then((stored) => {
+      if (stored) {
+        setEnabledPrograms(JSON.parse(stored));
+      }
+      setLoaded(true);
+    });
+  }, []);
+
+  const savePreferences = useCallback(async (prefs: Record<string, boolean>) => {
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
+  }, []);
+
+  const requestPermission = async (): Promise<boolean> => {
+    if (Platform.OS === "web") {
+      Alert.alert("Notifications", "Push notifications are available when running the app on your mobile device via Expo Go.");
+      return false;
+    }
+
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    if (existingStatus === "granted") return true;
+
+    const { status } = await Notifications.requestPermissionsAsync();
+    if (status === "granted") return true;
+
+    Alert.alert(
+      "Notifications Disabled",
+      "To receive program reminders, please enable notifications in your device settings.",
+      [
+        { text: "Cancel", style: "cancel" },
+        ...(Platform.OS !== "web"
+          ? [{
+              text: "Open Settings",
+              onPress: async () => {
+                try {
+                  await Linking.openSettings();
+                } catch {}
+              },
+            }]
+          : []),
+      ]
     );
+    return false;
   };
+
+  const toggleProgramNotification = async (id: string) => {
+    const currentlyEnabled = enabledPrograms[id] || false;
+    const program = PROGRAM_SCHEDULES.find((p) => p.id === id);
+    if (!program) return;
+
+    if (!currentlyEnabled) {
+      const hasPermission = await requestPermission();
+      if (!hasPermission) return;
+
+      await scheduleReminders(program);
+      const updated = { ...enabledPrograms, [id]: true };
+      setEnabledPrograms(updated);
+      await savePreferences(updated);
+    } else {
+      await cancelReminders(id);
+      const updated = { ...enabledPrograms, [id]: false };
+      setEnabledPrograms(updated);
+      await savePreferences(updated);
+    }
+  };
+
+  if (!loaded) return null;
 
   return (
     <ScrollView
@@ -57,18 +173,24 @@ export default function SettingsScreen() {
       <ThemedText
         style={[styles.sectionHeader, { color: theme.textSecondary }]}
       >
-        PROGRAM NOTIFICATIONS
+        PROGRAM REMINDERS
+      </ThemedText>
+
+      <ThemedText
+        style={[styles.sectionSubheader, { color: theme.textSecondary }]}
+      >
+        Get notified 15 minutes before your favorite programs
       </ThemedText>
 
       <View style={[styles.section, { backgroundColor: theme.cardBackground }]}>
-        {programNotifications.map((program, index) => (
+        {PROGRAM_SCHEDULES.map((program, index) => (
           <View key={program.id}>
             <View style={styles.settingRow}>
               <View style={styles.settingLeft}>
                 <Feather
-                  name="tv"
+                  name="bell"
                   size={20}
-                  color={Colors.light.primary}
+                  color={enabledPrograms[program.id] ? Colors.light.primary : theme.textSecondary}
                   style={styles.settingIcon}
                 />
                 <ThemedText style={styles.settingLabel} numberOfLines={1}>
@@ -76,7 +198,7 @@ export default function SettingsScreen() {
                 </ThemedText>
               </View>
               <Switch
-                value={program.enabled}
+                value={enabledPrograms[program.id] || false}
                 onValueChange={() => toggleProgramNotification(program.id)}
                 trackColor={{
                   false: theme.backgroundSecondary,
@@ -85,7 +207,7 @@ export default function SettingsScreen() {
                 thumbColor="#FFFFFF"
               />
             </View>
-            {index < programNotifications.length - 1 ? (
+            {index < PROGRAM_SCHEDULES.length - 1 ? (
               <View style={[styles.divider, { backgroundColor: theme.border }]} />
             ) : null}
           </View>
@@ -130,7 +252,7 @@ export default function SettingsScreen() {
       </View>
 
       <ThemedText style={[styles.footerText, { color: theme.textSecondary }]}>
-        Your trusted source for news and entertainment
+        Your Channel of Choice
       </ThemedText>
     </ScrollView>
   );
@@ -144,9 +266,14 @@ const styles = StyleSheet.create({
   sectionHeader: {
     fontSize: 13,
     fontWeight: "600",
-    marginBottom: Spacing.sm,
+    marginBottom: Spacing.xs,
     marginLeft: Spacing.xs,
     letterSpacing: 0.5,
+  },
+  sectionSubheader: {
+    fontSize: 12,
+    marginBottom: Spacing.md,
+    marginLeft: Spacing.xs,
   },
   settingRow: {
     flexDirection: "row",
