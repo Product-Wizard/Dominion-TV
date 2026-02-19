@@ -93,7 +93,7 @@ export default function SettingsScreen() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY).then((stored) => {
+    AsyncStorage.getItem(STORAGE_KEY).then((stored: string | null) => {
       if (stored) {
         setEnabledPrograms(JSON.parse(stored));
       }
