@@ -8,7 +8,8 @@ The app's core functionality includes:
 - Live program schedule with real-time detection of currently airing shows
 - Integration with YouTube for live streaming and program playback
 - News headlines display
-- Per-program notification preferences (UI only, not functional yet)
+- Per-program reminder notifications (15 minutes before a show starts)
+- Live notification system: checks the YouTube API when a programme starts and notifies users when the channel goes live, with retry logic (at +1, +2, +5 minutes from start time)
 
 ## User Preferences
 
@@ -92,8 +93,20 @@ shared/           # Shared code between client and server
 - **pg**: PostgreSQL client (database not yet provisioned)
 
 ### External Services
+- **YouTube Data API v3**: Used by `LiveSchedulerService` to check if the channel is live. Requires two environment variables:
+  - `EXPO_PUBLIC_YOUTUBE_CHANNEL_ID` — the Dominion TV YouTube channel ID (e.g. `UCxxxxxx`)
+  - `EXPO_PUBLIC_YOUTUBE_API_KEY` — a YouTube Data API v3 key
 - **YouTube**: Live streaming and video search integration via URL schemes
 - **Expo Linking**: Deep linking and URL handling
+
+### Live Notification Architecture
+- `client/config/schedule.ts` — programme timetable and YouTube credentials
+- `client/services/LiveSchedulerService.ts` — state-machine scheduler with:
+  - Phase tracking: IDLE → WAITING → LIVE (persisted via AsyncStorage)
+  - YouTube API polling with retry at +1, +2, +5 minutes from programme start
+  - `expo-notifications` for displaying push notifications
+  - `expo-background-fetch` + `expo-task-manager` for background polling (~15 min interval)
+  - Duplicate-notification guard (tracks last 50 stream IDs)
 
 ### Development Tools
 - **tsx**: TypeScript execution for development
