@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "788402928400",
+    "project_id": "dominion-tv-d195d",
+    "storage_bucket": "dominion-tv-d195d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:788402928400:android:d2c18a3be0d7fb0c084395",
+        "android_client_info": {
+          "package_name": "com.dominiontv.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsQsoBggb6hlbH3F5Q9lbMgY-Nf1TajIc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

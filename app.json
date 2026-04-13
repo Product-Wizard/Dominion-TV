@@ -13,6 +13,7 @@
       "bundleIdentifier": "com.dominiontv.app"
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "backgroundColor": "#00ccff",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -40,10 +41,16 @@
           }
         }
       ],
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-secure-store"
     ],
     "experiments": {
       "reactCompiler": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1eaa5649-5f6e-463b-a6a2-03133e1f96fd"
+      }
     }
   }
 }

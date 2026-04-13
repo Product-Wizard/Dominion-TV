@@ -1,0 +1,22 @@
+{
+  "cli": {
+    "version": ">= 10.2.1"
+  },
+  "build": {
+    "dev": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_BACKEND_URL": "http://192.168.42.85:4000"
+      },
+      "environment": "production"
+    },
+    "production": {}
+  },
+  "submit": {
+    "production": {}
+  }
+}
