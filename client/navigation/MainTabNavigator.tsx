@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Feather } from "@expo/vector-icons";
 import HomeScreen from "@/screens/HomeScreen";
 import NewsScreen from "@/screens/NewsScreen";
+import RadioScreen from "@/screens/RadioScreen";
 import SettingsScreen from "@/screens/SettingsScreen";
 import { useTheme } from "@/hooks/useTheme";
 import { HeaderTitle } from "@/components/HeaderTitle";
@@ -11,6 +12,7 @@ import { Colors } from "@/constants/theme";
 export type MainTabParamList = {
   Home: undefined;
   News: undefined;
+  Radio: undefined;
   Settings: undefined;
 };
 
@@ -56,6 +58,18 @@ export default function MainTabNavigator() {
           headerTitle: "NEWS",
           tabBarIcon: ({ color, size }) => (
             <Feather name="file-text" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Radio"
+        component={RadioScreen}
+        options={{
+          headerTitle: "DOMINION RADIO",
+          headerStyle: { backgroundColor: "#080808" },
+          headerTintColor: "#FFFFFF",
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="radio" size={size} color={color} />
           ),
         }}
       />
