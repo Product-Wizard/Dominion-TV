@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "Nt785zeVzAkW5crl7Kq5j"
+uri = "file://Dominion_TV_App_Stakeholder_Brief.md"
+type = "text"
+title = "Dominion TV App — Stakeholder Brief"

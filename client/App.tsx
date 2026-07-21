@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet } from "react-native";
+import React, { useEffect } from "react";
+import { StyleSheet, AppState, Linking } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
@@ -11,8 +11,32 @@ import { queryClient } from "@/lib/query-client";
 
 import RootStackNavigator from "@/navigation/RootStackNavigator";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import {
+  startScheduler,
+  onAppForegrounded,
+  registerNotificationHandlers,
+} from "@/services/LiveSchedulerService";
 
 export default function App() {
+  useEffect(() => {
+    startScheduler();
+
+    const appStateSub = AppState.addEventListener("change", (state) => {
+      if (state === "active") {
+        onAppForegrounded();
+      }
+    });
+
+    const unsubNotif = registerNotificationHandlers((url: string) => {
+      Linking.openURL(url).catch(() => {});
+    });
+
+    return () => {
+      appStateSub.remove();
+      unsubNotif();
+    };
+  }, []);
+
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
