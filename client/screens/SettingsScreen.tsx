@@ -10,10 +10,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme } from "@/hooks/useTheme";
 import { Spacing, BorderRadius, Colors } from "@/constants/theme";
 import { ThemedText } from "@/components/ThemedText";
+import { syncPushTokenRegistration } from "@/services/pushRegistration";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
     shouldPlaySound: true,
     shouldSetBadge: false,
   }),
@@ -117,23 +120,21 @@ export default function SettingsScreen() {
     const { status } = await Notifications.requestPermissionsAsync();
     if (status === "granted") return true;
 
-    Alert.alert(
-      "Notifications Disabled",
-      "To receive program reminders, please enable notifications in your device settings.",
-      [
-        { text: "Cancel", style: "cancel" },
-        ...(Platform.OS !== "web"
-          ? [{
-              text: "Open Settings",
-              onPress: async () => {
-                try {
-                  await Linking.openSettings();
-                } catch {}
-              },
-            }]
-          : []),
-      ]
-    );
+      Alert.alert(
+        "Notifications Disabled",
+        "To receive program reminders, please enable notifications in your device settings.",
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Open Settings",
+            onPress: async () => {
+              try {
+                await Linking.openSettings();
+              } catch {}
+            },
+          },
+        ]
+      );
     return false;
   };
 
@@ -146,6 +147,7 @@ export default function SettingsScreen() {
       const hasPermission = await requestPermission();
       if (!hasPermission) return;
 
+      void syncPushTokenRegistration();
       await scheduleReminders(program);
       const updated = { ...enabledPrograms, [id]: true };
       setEnabledPrograms(updated);

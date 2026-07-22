@@ -11,15 +11,18 @@ import { queryClient } from "@/lib/query-client";
 
 import RootStackNavigator from "@/navigation/RootStackNavigator";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { RadioPlayerProvider } from "@/providers/RadioPlayerProvider";
 import {
   startScheduler,
   onAppForegrounded,
   registerNotificationHandlers,
 } from "@/services/LiveSchedulerService";
+import { syncPushTokenRegistration } from "@/services/pushRegistration";
 
 export default function App() {
   useEffect(() => {
     startScheduler();
+    void syncPushTokenRegistration();
 
     const appStateSub = AppState.addEventListener("change", (state) => {
       if (state === "active") {
@@ -43,9 +46,11 @@ export default function App() {
         <SafeAreaProvider>
           <GestureHandlerRootView style={styles.root}>
             <KeyboardProvider>
-              <NavigationContainer>
-                <RootStackNavigator />
-              </NavigationContainer>
+              <RadioPlayerProvider>
+                <NavigationContainer>
+                  <RootStackNavigator />
+                </NavigationContainer>
+              </RadioPlayerProvider>
               <StatusBar style="auto" />
             </KeyboardProvider>
           </GestureHandlerRootView>

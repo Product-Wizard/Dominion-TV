@@ -12,7 +12,10 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.dominiontv.app",
       "infoPlist": {
-        "UIBackgroundModes": ["audio", "fetch"]
+        "UIBackgroundModes": [
+          "audio",
+          "fetch"
+        ]
       }
     },
     "android": {
@@ -29,7 +32,9 @@
         "FOREGROUND_SERVICE",
         "FOREGROUND_SERVICE_MEDIA_PLAYBACK",
         "RECEIVE_BOOT_COMPLETED",
-        "POST_NOTIFICATIONS"
+        "POST_NOTIFICATIONS",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
       ]
     },
     "web": {
@@ -50,10 +55,21 @@
         }
       ],
       "expo-web-browser",
-      "expo-audio"
+      [
+        "expo-audio",
+        {
+          "enableBackgroundPlayback": true
+        }
+      ],
+      "expo-font"
     ],
     "experiments": {
       "reactCompiler": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1eaa5649-5f6e-463b-a6a2-03133e1f96fd"
+      }
     }
   }
 }

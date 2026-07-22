@@ -1,0 +1,30 @@
+{
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_BASE_URL": "https://dominion.findmeaninternship.com",
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_BASE_URL": "https://dominion.findmeaninternship.com",
+      }
+    },
+    "android-prod": {
+      "distribution": "store",
+      "env": {
+        "EXPO_PUBLIC_BASE_URL": "https://dominion.findmeaninternship.com"
+      }
+    },
+    "ios-prod": {
+      "distribution": "store",
+      "env": {
+        "EXPO_PUBLIC_BASE_URL": "https://dominion.findmeaninternship.com"
+      }
+    },
+    "production": {},
+  }
+}
